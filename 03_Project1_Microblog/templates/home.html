@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Microblog</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
     <header class="navbar">
         <div class="navbar__brand">
-            <img class="navbar__logo" src="/logo.svg" alt="Microblog Logo">Microblog
+            <img class="navbar__logo" src="../static/logo.svg" alt="Microblog Logo">Microblog
         </div>
         <ul class="navbar__navigation">
             <li class="navbar__navigation-item"><a href="#" class="navbar__link">Recent</a></li>
@@ -19,7 +19,7 @@
     <main class="main">
         <section>
             <h1>Add new entry</h1>
-            <form class="form" action="/entry" method="post">
+            <form class="form" action="/" method="post">
                 <p class="form__input">
                     <label for="entry" class="form__label">Entry contents</label>
                     <textarea name="content" id="entry" class="form__textarea"></textarea>
@@ -27,17 +27,19 @@
                 <button type="submit" class="form__submit">Add Entry</button>
         <section>
             <h1>Recent Posts</h1>
+            {% for entry in entries %}
             <article class="entry">
                 <div>
-                    <h2 class="entry__title">A bit of a chill day Today</h2>
-                    <time class="entry__date" datetime="19-6-24">• June 24</time>
+                    <h2 class="entry__title">{{ entry[0] | truncate(30, true) }}</h2>
+                    <time class="entry__date" datetime="{{ entry[1] }}">• {{ entry[2] }}</time>
                 </div>
                 <div>
                     <p class="entry__content">
-                        Today I couldn't do much programming, but that's OK! Can't be too awesome everyday now!
+                        {{ entry[0] }}
                     </p>
                 </div>
             </article>
+            {% endfor %}
         </section>
     </main>
     <footer class="footer">
