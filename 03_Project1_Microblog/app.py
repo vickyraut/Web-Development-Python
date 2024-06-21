@@ -1,23 +1,35 @@
 from flask import Flask, render_template, request
 import datetime
+from pymongo import MongoClient
 
-app = Flask(__name__)
+def create_app():
 
-entries = []
+    app = Flask(__name__)
+    client = MongoClient("mongodb+srv://codemonk:Vds#24!Y!4ffKNR@microblog.8jpj8hn.mongodb.net/?retryWrites=true&w=majority&appName=microblog")
+    # Database Name
+    db = client.microblog
+    # Collection Name
+    entrycollection = db.entrycollection
 
-@app.route("/", methods=["GET", "POST"])
-def home():
-    if request.method == "POST":
-        entry_content = request.form.get("content")
-        formated_date = datetime.datetime.today().strftime("%Y-%m-%d")
-        entries.append((entry_content, formated_date))
+
+    @app.route("/", methods=["GET", "POST"])
+    def home():
+        # print([e for e in app.db.entries.find({})])
+        if request.method == "POST":
+            entry_content = request.form.get("content")
+            formated_date = datetime.datetime.today().strftime("%Y-%m-%d")
+            #  Inserting Data to MongoDB
+            entrycollection.insert_one({"content": entry_content, "date" :formated_date})
         
-    entries_with_date = [
-        (entry[0],
-        entry[1],
-        datetime.datetime.strptime(entry[1], "%Y-%m-%d").strftime("%b %d")
-        )
-        for entry in entries
-    ]
+        entries_with_date = [
+            (entry["content"],
+            entry["date"],
+            datetime.datetime.strptime(entry["date"], "%Y-%m-%d").strftime("%b %d")
+            )
+            # Retriving All data from database and traverssing it.
+            for entry in entrycollection.find({})
+        ]
+        
+        return render_template("home.html", entries=entries_with_date)
     
-    return render_template("home.html", entries=entries_with_date)
+    return app

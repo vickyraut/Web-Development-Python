@@ -72,6 +72,7 @@ body {
 }
 
 .form__textarea {
+  height: 350px;
   width: inherit;
   font-size: 18px;
   padding: 12px 20px;
